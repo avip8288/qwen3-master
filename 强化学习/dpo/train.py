@@ -66,7 +66,7 @@ training_args = DPOConfig(
     learning_rate=1e-4,
     logging_first_step=5,
     max_grad_norm=1.0,
-    beta=0.5
+    beta=0.5    #0.1--0.5,越小越稳定
 )
 
 
