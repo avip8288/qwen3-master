@@ -91,7 +91,7 @@ def correctness_reward_func(prompts, completions, answer, db_set,  **kwargs) -> 
             if a in r:
                 rewards.append(2.0)
             elif r == a:
-                rewards.append(2.0)
+                rewards.append(2.0)    #严格些，可以提高分数
             else:
                 rewards.append(0.0)
         else:
