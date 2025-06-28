@@ -81,14 +81,14 @@ swanlab_callback = SwanLabCallback(
 
 trainer = SFTTrainer(
     model = model,
-    processing_class=tokenizer,
+    processing_class=tokenizer, #新trl
     train_dataset = train_ds,
     eval_dataset = None,  # 可以设置评估数据集
     callbacks=[swanlab_callback],
     args = SFTConfig(
         output_dir="./lora_model",
         per_device_train_batch_size = 1,  # 每个设备的训练批次大小
-        gradient_accumulation_steps = 16,  # 使用梯度累积模拟更大批次大小
+        gradient_accumulation_steps = 16,  # 使用梯度累积模拟更大批次大小，越小 精度越高
         warmup_steps = 5,  # 预热步数
         num_train_epochs = 4,  # 训练轮数设置为1以进行完整训练
         learning_rate = 2e-4,   # 学习率（长期训练可降至2e-5）
@@ -100,7 +100,7 @@ trainer = SFTTrainer(
         report_to = "none",   # 可设置为"wandb"等进行实验追踪
         fp16=True,
         max_grad_norm=1.0,
-        deepspeed=DS_CONFIG,
+        deepspeed=DS_CONFIG, #= "ds_z2_offload_config.json"
         logging_first_step=5,
         save_steps=100,
     ),
@@ -161,10 +161,10 @@ def ask(question, is_thinking=True, save_to_file=None):
         _ = model.generate(
             **tokenizer(text, return_tensors="pt").to("cuda"),
             max_new_tokens=1024,
-            temperature=0.6,
-            top_p=0.95,
-            top_k=20,
-            streamer=streamer,  # 关键：使用自定义的 streamer
+            temperature=0.6,#温度，小 稳定
+            top_p=0.95,#概率和
+            top_k=20, #前20个
+            streamer=streamer,  # 关键：使用自定义的 streamer，多卡会乱
         )
 
     # 获取完整输出
