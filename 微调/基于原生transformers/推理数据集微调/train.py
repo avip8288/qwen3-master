@@ -30,9 +30,9 @@ model.enable_input_require_grads()  # 开启梯度检查点时，要执行该方
 
 config = LoraConfig(
     task_type=TaskType.CAUSAL_LM,
-    target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],    #["q_proj", "k_proj", "v_proj", "o_proj",   "gate_proj", "up_proj", "down_proj"],  
     inference_mode=False,  # 训练模式
-    r=8,  # Lora 秩
+    r=8,  # Lora 秩8 16 32 效果差不多
     lora_alpha=16,  # Lora alaph，具体作用参见 Lora 原理
     lora_dropout=0.1,  # Dropout 比例
 )
@@ -88,7 +88,7 @@ trainer = SFTTrainer(
     args = SFTConfig(
         output_dir="./lora_model",
         per_device_train_batch_size = 1,  # 每个设备的训练批次大小
-        gradient_accumulation_steps = 16,  # 使用梯度累积模拟更大批次大小，越小 精度越高
+        gradient_accumulation_steps = 16,  # 使用梯度累积后平均，模拟更大批次大小，越小 精度越高
         warmup_steps = 5,  # 预热步数
         num_train_epochs = 4,  # 训练轮数设置为1以进行完整训练
         learning_rate = 2e-4,   # 学习率（长期训练可降至2e-5）
